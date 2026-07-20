@@ -18,6 +18,7 @@ $("fileInput").onchange=e=>{if(e.target.files[0])handleFile(e.target.files[0])};
 $("dropZone").addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f&&f.type==="application/pdf")handleFile(f)});
 async function handleFile(file){
 fileName=file.name;
+fetch("https://api.counterapi.dev/v1/s2c-parham/parses/up").catch(()=>{});
 $("progress").hidden=false;
 $("progressText").textContent="reading "+file.name+"…";
 try{
@@ -128,3 +129,5 @@ st.textContent="verified. unlocked forever on this browser, keep the hash as you
 setTimeout(()=>{$("payDialog").close();renderResult()},1200);
 }catch(err){st.textContent="verification error: "+err.message}
 };
+fetch("https://api.counterapi.dev/v1/s2c-parham/visits/up").catch(()=>{});
+document.addEventListener("visibilitychange",()=>{});
