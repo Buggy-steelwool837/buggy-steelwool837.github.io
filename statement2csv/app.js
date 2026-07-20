@@ -44,8 +44,9 @@ return;
 }
 $("progress").hidden=true;
 }
-const DATE_RE=/\b(\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}|\d{4}-\d{2}-\d{2}|\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{0,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2},?\s*\d{0,4})\b/i;
-const AMT_RE=/[-+(]?\$?\s?\d{1,3}(?:[.,\s]\d{3})*[.,]\d{2}\)?(?!\d)/g;
+const DATE_RE=/\b(\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}|\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}|\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?(?:\s+\d{2,4})?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{2,4})?)\b/gi;
+const AMT_RE=/[-+(]?\$?\s?\d{1,3}(?:[.,\s]\d{3})*[.,]\d{2}\)?-?(?!\d)/g;
+const SUMMARY_RE=/\b(?:opening balance|closing balance|balance (?:carried|brought) forward|total|subtotal|statement period)\b/i;
 function parseAmount(s){
 const neg=/^[-(]|\)$/.test(s.trim())||s.includes("-");
 let n=s.replace(/[^0-9.,]/g,"");
@@ -56,18 +57,27 @@ const v=parseFloat(n);
 return neg?-Math.abs(v):v;
 }
 function extractTransactions(lines){
-const out=[];
+const candidates=[];
 for(const line of lines){
-const d=line.match(DATE_RE);
-if(!d)continue;
-const amts=[...line.matchAll(AMT_RE)].map(m=>m[0]);
+const dates=line.match(DATE_RE)||[];
+if(!dates.length)continue;
+let amountLine=line;
+for(const date of dates)amountLine=amountLine.replace(date," ".repeat(date.length));
+const amts=[...amountLine.matchAll(AMT_RE)].map(m=>m[0]);
 if(!amts.length)continue;
-const amount=amts[amts.length-1];
-let desc=line.replace(d[0],"");
+let desc=line;
+for(const date of dates)desc=desc.replace(date,"");
 for(const a of amts)desc=desc.replace(a,"");
 desc=desc.replace(/\s+/g," ").trim().slice(0,120);
-if(!desc)continue;
-out.push({date:d[0],description:desc,amount:parseAmount(amount),raw:amount.trim()});
+if(!desc||SUMMARY_RE.test(desc))continue;
+candidates.push({date:dates[0],description:desc,amts});
+}
+const amountCount=candidates.length?candidates[0].amts.length:0;
+const hasBalance=candidates.length>0&&amountCount>=2&&candidates.every(row=>row.amts.length===amountCount)&&candidates.every(row=>Math.abs(parseAmount(row.amts[row.amts.length-1]))>=Math.max(...row.amts.slice(0,-1).map(a=>Math.abs(parseAmount(a)))));
+const out=[];
+for(const row of candidates){
+const amount=hasBalance?row.amts[row.amts.length-2]:row.amts[row.amts.length-1];
+out.push({date:row.date,description:row.description,amount:parseAmount(amount),raw:amount.trim()});
 }
 return out;
 }
