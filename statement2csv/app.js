@@ -72,12 +72,11 @@ desc=desc.replace(/\s+/g," ").trim().slice(0,120);
 if(!desc||SUMMARY_RE.test(desc))continue;
 candidates.push({date:dates[0],description:desc,amts});
 }
-const amountCount=candidates.length?candidates[0].amts.length:0;
-const hasBalance=candidates.length>0&&amountCount>=2&&candidates.every(row=>row.amts.length===amountCount)&&candidates.every(row=>Math.abs(parseAmount(row.amts[row.amts.length-1]))>=Math.max(...row.amts.slice(0,-1).map(a=>Math.abs(parseAmount(a)))));
 const out=[];
 for(const row of candidates){
-const amount=hasBalance?row.amts[row.amts.length-2]:row.amts[row.amts.length-1];
-out.push({date:row.date,description:row.description,amount:parseAmount(amount),raw:amount.trim()});
+const amount=row.amts[0];
+const balance=row.amts.length>=2?row.amts[row.amts.length-1]:null;
+out.push({date:row.date,description:row.description,amount:parseAmount(amount),balance:balance===null?null:parseAmount(balance)});
 }
 return out;
 }
@@ -87,14 +86,15 @@ $("resultTitle").textContent=fileName;
 const shown=unlocked()?rows:rows.slice(0,FREE_ROWS);
 $("resultMeta").textContent=rows.length+" transactions found"+(unlocked()?"":" · free preview shows first "+FREE_ROWS);
 const t=$("txTable");
-t.innerHTML="<tr><th>Date</th><th>Description</th><th>Amount</th></tr>"+shown.map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.description)}</td><td class="amt ${r.amount<0?"neg":"pos"}">${r.amount.toFixed(2)}</td></tr>`).join("");
+const hasBalance=rows.some(r=>r.balance!==null);
+t.innerHTML=`<tr><th>Date</th><th>Description</th><th>Amount</th>${hasBalance?"<th>Balance</th>":""}</tr>`+shown.map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.description)}</td><td class="amt ${r.amount<0?"neg":"pos"}">${r.amount.toFixed(2)}</td>${hasBalance?`<td class="amt ${r.balance!==null&&r.balance<0?"neg":"pos"}">${r.balance===null?"":r.balance.toFixed(2)}</td>`:""}</tr>`).join("");
 const locked=rows.length-shown.length;
 $("paywall").hidden=locked<=0;
 if(locked>0)$("lockedCount").textContent=locked;
 $("result").scrollIntoView({behavior:"smooth"});
 }
 function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function toCSV(list){return "date,description,amount\n"+list.map(r=>`"${r.date}","${r.description.replace(/"/g,'""')}",${r.amount.toFixed(2)}`).join("\n")}
+function toCSV(list){const hasBalance=list.some(r=>r.balance!==null);return "date,description,amount"+(hasBalance?",balance":"")+"\n"+list.map(r=>`"${r.date}","${r.description.replace(/"/g,"\"\"")}",${r.amount.toFixed(2)}${hasBalance?`,${r.balance===null?"":r.balance.toFixed(2)}`:""}`).join("\n")}
 $("csvBtn").onclick=()=>{
 const list=unlocked()?rows:rows.slice(0,FREE_ROWS);
 const blob=new Blob([toCSV(list)],{type:"text/csv"});
@@ -105,7 +105,8 @@ a.click();
 };
 $("copyBtn").onclick=async()=>{
 const list=unlocked()?rows:rows.slice(0,FREE_ROWS);
-await navigator.clipboard.writeText(list.map(r=>`${r.date}\t${r.description}\t${r.amount.toFixed(2)}`).join("\n"));
+const hasBalance=list.some(r=>r.balance!==null);
+await navigator.clipboard.writeText(list.map(r=>`${r.date}\t${r.description}\t${r.amount.toFixed(2)}${hasBalance?`\t${r.balance===null?"":r.balance.toFixed(2)}`:""}`).join("\n"));
 $("copyBtn").textContent="Copied";
 setTimeout(()=>$("copyBtn").textContent="Copy for Excel",1500);
 };
