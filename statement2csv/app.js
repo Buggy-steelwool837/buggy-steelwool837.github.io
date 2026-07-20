@@ -45,7 +45,7 @@ return;
 $("progress").hidden=true;
 }
 const DATE_RE=/\b(\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}|\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}|\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?(?:\s+\d{2,4})?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{2,4})?)\b/gi;
-const AMT_RE=/[-+(]?\$?\s?\d{1,3}(?:[.,\s]\d{3})*[.,]\d{2}\)?-?(?!\d)/g;
+const AMT_RE=/[-+(]?\$?\s?(?:\d{1,3}(?:[.,\s]\d{3})+|\d+)[.,]\d{2}\)?-?(?!\d)/g;
 const SUMMARY_RE=/\b(?:opening balance|closing balance|balance (?:carried|brought) forward|total|subtotal|statement period)\b/i;
 function parseAmount(s){
 const neg=/^[-(]|\)$/.test(s.trim())||s.includes("-");
