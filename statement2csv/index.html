@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statement2CSV - bank statement PDF to CSV, in your browser</title>
+<meta name="description" content="Convert bank statement PDFs to clean CSV/Excel locally in your browser. Your statement never leaves your computer. Free preview, $7 one-time for unlimited exports.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+<header class="masthead">
+<div class="wrap">
+<span class="brand">Statement2CSV</span>
+<span class="tagline">bank statements &rarr; spreadsheets, without uploading them anywhere</span>
+</div>
+</header>
+<main class="wrap">
+<section class="ledger-card" id="dropCard">
+<div class="drop" id="dropZone" tabindex="0" role="button" aria-label="Choose or drop a PDF bank statement">
+<svg class="drop-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 3h11l5 5v13H4z"/><path d="M15 3v5h5"/><path d="M8 13h8M8 16h8M8 10h3"/></svg>
+<h1>Drop a bank statement PDF here</h1>
+<p class="drop-sub">Parsed locally by JavaScript in this tab. Nothing is uploaded, we never see your data. Works offline once loaded.</p>
+<button class="btn" id="pickBtn" type="button">Choose PDF</button>
+<input type="file" id="fileInput" accept="application/pdf" hidden>
+</div>
+<div class="progress" id="progress" hidden><span class="mono" id="progressText">reading&hellip;</span></div>
+</section>
+<section class="result" id="result" hidden>
+<div class="result-head">
+<div>
+<h2 id="resultTitle" class="mono"></h2>
+<p class="result-meta mono" id="resultMeta"></p>
+</div>
+<div class="result-actions">
+<button class="btn" id="csvBtn" type="button">Download CSV</button>
+<button class="btn ghost" id="copyBtn" type="button">Copy for Excel</button>
+</div>
+</div>
+<div class="table-scroll"><table id="txTable" aria-label="Extracted transactions"></table></div>
+<div class="paywall" id="paywall" hidden>
+<p><strong id="lockedCount"></strong> more rows extracted. The free version exports the first 15 rows per statement.</p>
+<p>Unlock unlimited rows and files forever for <strong>$7 in USDT</strong> (BNB Smart Chain), verified right here in your browser. No account, no email.</p>
+<button class="btn" id="unlockBtn" type="button">Unlock for $7</button>
+</div>
+</section>
+<section class="how">
+<div class="how-col"><h3>Private by construction</h3><p>The PDF is read with pdf.js inside your browser tab. There is no server to upload to. You can disconnect from the internet after the page loads and it still works.</p></div>
+<div class="how-col"><h3>Any tabular statement</h3><p>The parser looks for date + amount patterns, so it handles most bank, card, and PayPal statements. If yours parses badly, tell us and we will add a rule for it.</p></div>
+<div class="how-col"><h3>Pay once, in stablecoins</h3><p>$7 in USDT on BNB Smart Chain unlocks everything, on every device you paste your receipt hash into. Payment is verified against the public chain, in your browser.</p></div>
+</section>
+<dialog id="payDialog">
+<h2>Unlock Statement2CSV</h2>
+<ol class="paysteps">
+<li>Send exactly <strong class="mono">7 USDT</strong> (BEP-20, BNB Smart Chain) to<br><code class="mono addr" id="payAddr">0x477c76f835B3223109569DdDE2Ff0597612b6e01</code> <button class="mini" id="copyAddr" type="button">copy</button></li>
+<li>Paste your transaction hash below. We check it against the public BSC chain from your browser.</li>
+</ol>
+<form method="dialog" id="payForm">
+<input class="mono" id="txHash" placeholder="0x transaction hash" autocomplete="off" spellcheck="false">
+<div class="payrow"><button class="btn" id="verifyBtn" type="button">Verify payment</button><button class="btn ghost" value="cancel">Close</button></div>
+</form>
+<p class="paystatus mono" id="payStatus"></p>
+<p class="fineprint">One payment = lifetime unlock. Keep your tx hash, it is your license key. Questions: <span id="contactSlot">see footer</span>.</p>
+</dialog>
+</main>
+<footer class="wrap foot">
+<span>Built by <a href="https://parhamcodes.github.io">Parham</a>. AI-assisted, human-reviewed.</span>
+<span id="footContact"></span>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>

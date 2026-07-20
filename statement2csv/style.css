@@ -1,0 +1,53 @@
+:root{--paper:#fbfaf7;--ink:#1c2320;--rule:#d9d4c8;--accent:#0f6b4f;--accent-ink:#0a4a37;--warn:#8a4b12;--mono:"IBM Plex Mono",monospace;--body:"Inter",sans-serif;--display:"Fraunces",serif}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(15,107,79,.055) 27px,rgba(15,107,79,.055) 28px)}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+.masthead{border-bottom:2px solid var(--ink);background:var(--paper);padding:14px 0}
+.masthead .wrap{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:1.35rem;letter-spacing:-.01em}
+.tagline{font-family:var(--mono);font-size:.78rem;color:#5a6360}
+.ledger-card{margin:42px 0 26px}
+.drop{border:2px dashed var(--rule);background:#fff;border-radius:6px;padding:48px 28px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop:focus-visible,.drop.over{border-color:var(--accent);background:#f4faf7;outline:none}
+.drop-ic{width:44px;height:44px;color:var(--accent);margin-bottom:14px}
+.drop h1{font-family:var(--display);font-size:1.7rem;font-weight:600;margin-bottom:8px}
+.drop-sub{color:#4c5450;max-width:520px;margin:0 auto 20px;font-size:.95rem}
+.btn{font-family:var(--mono);font-size:.9rem;background:var(--accent);color:#fff;border:none;border-radius:4px;padding:10px 20px;cursor:pointer}
+.btn:hover{background:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--accent-ink);border:1px solid var(--rule)}
+.btn.ghost:hover{border-color:var(--accent-ink)}
+.mini{font-family:var(--mono);font-size:.72rem;border:1px solid var(--rule);background:#fff;border-radius:3px;padding:2px 8px;cursor:pointer;vertical-align:middle}
+.progress{margin-top:14px;text-align:center}
+.mono{font-family:var(--mono)}
+.result{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:22px;margin-bottom:34px}
+.result-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.result-head h2{font-size:1rem;font-weight:600}
+.result-meta{font-size:.78rem;color:#5a6360}
+.result-actions{display:flex;gap:10px}
+.table-scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:.82rem}
+th{background:#f1efe8;text-align:left;padding:7px 10px;border-bottom:2px solid var(--rule);position:sticky;top:0}
+td{padding:6px 10px;border-bottom:1px solid #eceade;white-space:nowrap}
+td.amt{text-align:right}
+td.neg{color:#943326}
+td.pos{color:var(--accent-ink)}
+.paywall{margin-top:16px;border:1px solid var(--warn);background:#fdf6ec;border-radius:4px;padding:14px 16px;font-size:.92rem}
+.paywall p{margin-bottom:8px}
+.paywall .btn{margin-top:4px}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin:10px 0 44px}
+.how-col h3{font-family:var(--display);font-size:1.05rem;font-weight:600;margin-bottom:6px}
+.how-col p{font-size:.9rem;color:#434b47}
+dialog{border:2px solid var(--ink);border-radius:6px;padding:26px;max-width:520px;width:92%}
+dialog::backdrop{background:rgba(28,35,32,.45)}
+dialog h2{font-family:var(--display);margin-bottom:14px}
+.paysteps{padding-left:20px;margin-bottom:16px}
+.paysteps li{margin-bottom:12px;font-size:.93rem}
+.addr{font-size:.78rem;word-break:break-all;background:#f1efe8;padding:2px 6px;border-radius:3px;display:inline-block;margin-top:4px}
+#txHash{width:100%;font-size:.85rem;padding:9px 10px;border:1px solid var(--rule);border-radius:4px;margin-bottom:12px}
+.payrow{display:flex;gap:10px}
+.paystatus{margin-top:12px;font-size:.82rem;min-height:1.2em}
+.fineprint{margin-top:14px;font-size:.78rem;color:#5a6360}
+.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:16px;padding-bottom:30px;font-size:.82rem;color:#5a6360}
+.foot a{color:var(--accent-ink)}
+@media(max-width:640px){.how{grid-template-columns:1fr}.result-head{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
